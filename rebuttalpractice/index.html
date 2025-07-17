@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<head>
+    <title>Oratio.AI</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="../script.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <div class="navbar navbar-expand-sm bg-light navbar-light">
+        <div class="head-navbar">Oratio.AI</div>
+        <div class="navbar-collapse">
+            <ul class="links-navbar navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../speechgenerator/">Speech Generator</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../speechchecker/">Speech Checker</a>
+                </li>    
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Rebuttal Practice</a>
+                </li>  
+            </ul>
+        </div>
+    </div>
+    <div class="horizontal-container">
+        <div class="sentence-row">
+            <div class="sectiontitle1">
+                Rebuttal&nbsp;
+                <span class="aurora-layers">
+                    <span class="aurora aurora-1"></span>
+                    <span class="aurora aurora-2"></span>
+                    <span class="aurora aurora-3"></span>
+                    <span class="aurora aurora-4"></span>
+                </span>
+            </div>
+        </div>
+        <div class="continue-title" style="font-size: 5vw;">Practice</div>
+    </div>
+    <form class="form-inline d-flex align-items-center flex-wrap gap-2" style="margin:20px; justify-content: center;" id="speech-form2">
+        <label class="form-label label1 me-2" for="motion">Enter a motion:</label>
+        <input type="text" class="form-control me-4" id="motion" name="motion" required style="height: 6vh; width: 12vw;">
+        
+        <label class="form-label label1 me-2" for="debatetype">Side:</label>
+        <select name="side" id="side" class="form-select me-4" style="height: 6vh; width: 9vw;">
+            <option value="Proposition">Proposition</option>
+            <option value="Opposition">Opposition</option>
+        </select>
+
+        <label class="form-label label1 me-2" for="debatetype">Debate Form:</label>
+        <select name="debatetype" id="debatetype" class="form-select me-4" style="height: 6vh; width: 11vw;">
+            <option value="ap">Asian Parliamentary</option>
+            <option value="bp">British Parliamentary</option>
+        </select>
+
+        <div class="g-recaptcha" data-sitekey="" data-callback="undisableRebuttal"></div>
+        <input type="submit" class="btn btn-primary button-try-it" id="rebuttalButton" style="border: none; height: 5vh !important; width: 9.5vw !important;" value="Generate Speech" disabled></input>
+        <input type="submit" class="btn btn-primary button-try-it-old" id="rebuttalButton1" style="border: none; height: 5vh !important; width: 15vw !important;" value="Generate Rebuttal Feedback" disabled></input>
+    </form>
+    <br>
+    <center>
+        <div class="horizontal-container" style="gap: 20px; margin-top: 2px; align-items: stretch; margin-left: 15px; margin-right: 15px;">
+            <textarea class="form-control speechtext-area2" placeholder="A generated speech will appear here..." id="speechOutput" style="font-family: 'Georgia'; font-size: 16px; height: 43.5vh !important;" readonly></textarea>
+            <textarea class="form-control speechtext-area2" id="rebuttalInput" style="font-family: 'Georgia'; font-size: 16px;" placeholder="Enter your rebuttal here to get feedback..."></textarea>
+            <textarea class="form-control speechtext-area2" id="feedbackOutput" style="font-family: 'Georgia'; font-size: 16px;" readonly placeholder="Receive your feedback here!"></textarea>
+        </div>
+    </center>
+    <br>
+    <p style="color: black; font-size: 10px; font-family: 'Georgia'; margin-left: 15px; margin-right: 15px; text-align: center; justify-content: center;">Warning: AI-generated content may be inaccurate, biased, or unsuitable for specific contexts. It may occasionally produce responses that are irrelevant, inappropriate, or unrelated to the input, and could include content on sensitive topics without context. Always verify the information and use discretion before relying on or sharing AI outputs, and continue at your own risk.</p>
+<script>
+    function undisableRebuttal() {
+        document.getElementById('rebuttalButton').disabled = false;
+        document.getElementById('rebuttalButton1').disabled = false;
+    }
+
+    var i = 0;
+    var speed = 2;
+
+    function typeWriter2(txt) {
+        if (!txt || typeof txt !== 'string') {
+            console.error("typeWriter: invalid input", txt);
+            return;
+        }
+
+        if (i < txt.length) {
+            document.getElementById("speechOutput").innerHTML += txt.charAt(i);
+            i++;
+            setTimeout(() => typeWriter2(txt), speed);
+        }
+    }
+
+    function typeWriter3(txt) {
+        if (!txt || typeof txt !== 'string') {
+            console.error("typeWriter: invalid input", txt);
+            return;
+        }
+
+        if (i < txt.length) {
+            document.getElementById("feedbackOutput").innerHTML += txt.charAt(i);
+            i++;
+            setTimeout(() => typeWriter3(txt), speed);
+        }
+    }
+
+    $(document).ready(function () {
+        $('#speech-form2').on('submit', function (e) {
+            e.preventDefault();
+
+            const motion = $('#motion').val();
+            const debatetype = $('#debatetype').val();
+            const speech = $('#speechOutput').val();
+            const rebuttal = $('#rebuttalInput').val();
+            const side = $('#side').val();
+
+            if (speech == "") {
+                document.getElementById("speechOutput").innerHTML = "Generating speech - this can take up to a minute...";
+            } else {
+                document.getElementById("feedbackOutput").innerHTML = "Generating feedback - this can take up to a minute...";
+            }
+
+            $.ajax({
+                url: 'rebuttalhandler.php',
+                type: 'POST',
+                data: {
+                    motion: motion,
+                    debatetype: debatetype,
+                    speech: speech,
+                    rebuttal: rebuttal,
+                    side: side
+                },
+                success: function (response) {
+                    if (speech == "") {
+                        document.getElementById("speechOutput").innerHTML = "";
+                        i = 0;
+                        console.log('Writing to speech output');
+                        typeWriter2(response)
+                    } else {
+                        document.getElementById("feedbackOutput").innerHTML = "";
+                        i = 0;
+                        console.log('Writing to feedback output');
+                        typeWriter3(response)
+                    }
+                },
+                error: function () {
+                    alert('Something went wrong - please try again later.');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

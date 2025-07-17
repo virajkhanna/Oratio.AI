@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<head>
+    <title>Oratio.AI</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="../script.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <div class="navbar navbar-expand-sm bg-light navbar-light">
+        <div class="head-navbar">Oratio.AI</div>
+        <div class="navbar-collapse">
+            <ul class="links-navbar navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../speechgenerator/">Speech Generator</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Speech Checker</a>
+                </li>    
+                <li class="nav-item">
+                    <a class="nav-link" href="../rebuttalpractice/">Rebuttal Practice</a>
+                </li>  
+            </ul>
+        </div>
+    </div>
+    <div class="horizontal-container">
+        <div class="sentence-row">
+            <div class="sectiontitle1">
+                Speech
+                <span class="aurora-layers">
+                    <span class="aurora aurora-1"></span>
+                    <span class="aurora aurora-2"></span>
+                    <span class="aurora aurora-3"></span>
+                    <span class="aurora aurora-4"></span>
+                </span>
+            </div>
+            <div class="continue-title" style="font-size: 5vw;">Checker</div>
+        </div>
+    </div>
+    <!--<form>
+        <label class="form-label label1" for="motion">Enter a motion:</label>
+        <span class="input1">
+            <input type="text" class="form-control" style="height: 4vh; width: 25vw; margin-left: 10px;" id="motion" required>
+        </span>
+        <br>
+        <label class="form-label label1" for="motion">Form of Debate:</label>
+        <span class="input1">
+            <select name="debatetype" id="debatetype" style="height: 4vh; width: 20vw; margin-left: 10px; margin-right: 0;">
+                <option value="ap">Asian Parliamentary</option>
+                <option value="bp">British Parliamentary</option>
+            </select>
+            <button class="btn btn-primary" style="display: inline; overflow: hidden; float: right; margin-left: 0;" id="generateSpeech">Generate</button>
+        </span>
+    </form>-->
+    <form class="form-inline d-flex align-items-center flex-wrap gap-2" style="margin: 20px; justify-content: center;" id="speech-form1">
+        <label class="form-label label1 me-2" for="motion">Enter a motion:</label>
+        <input type="text" class="form-control me-4" id="motion" name="motion" required style="height: 6vh; width: 12vw;">
+
+        <label class="form-label label1 me-2" for="debatetype">Debate Form:</label>
+        <select name="debatetype" id="debatetype" class="form-select me-4" style="height: 6vh; width: 14vw;">
+            <option value="ap">Asian Parliamentary</option>
+            <option value="bp">British Parliamentary</option>
+        </select>
+
+        <label class="form-label label1 me-2" for="side">Side:</label>
+        <select name="side" id="side" class="form-select me-4" style="height: 6vh; width: 9vw;">
+            <option value="Proposition">Proposition</option>
+            <option value="Opposition">Opposition</option>
+        </select>
+        <div class="g-recaptcha" data-sitekey="" data-callback="undisableSpeechCheck"></div>
+        <input type="submit" class="btn btn-primary button-try-it" id="checkSpeech" style="border: none; height: 5vh !important;" value="Check It!" disabled></input>
+    </form>
+    <br>
+    <center>
+        <div class="horizontal-container" style="gap: 20px; margin-top: 2px; align-items: stretch; margin-left: 15px; margin-right: 15px;">
+            <textarea class="form-control speechtext-area1" placeholder="Enter your speech here..." id="speechInput1" style="font-family: 'Georgia'; font-size: 16px; height: 43.5vh !important;"></textarea>
+            <textarea class="form-control speechtext-area1" id="feedbackOutput" style="font-family: 'Georgia'; font-size: 16px;" readonly></textarea>
+        </div>
+    </center>
+    <br>
+    <p style="color: black; font-size: 10px; font-family: 'Georgia'; margin-left: 15px; margin-right: 15px; text-align: center; justify-content: center;">Warning: AI-generated content may be inaccurate, biased, or unsuitable for specific contexts. It may occasionally produce responses that are irrelevant, inappropriate, or unrelated to the input, and could include content on sensitive topics without context. Always verify the information and use discretion before relying on or sharing AI outputs, and continue at your own risk.</p>
+<script>
+var i = 0;
+var speed = 2;
+
+function typeWriter1(txt) {
+  if (!txt || typeof txt !== 'string') {
+    console.error("typeWriter: invalid input", txt);
+    return;
+  }
+
+  if (i < txt.length) {
+    document.getElementById("feedbackOutput").value += txt.charAt(i);
+    i++;
+    setTimeout(() => typeWriter1(txt), speed);
+  }
+}
+$(document).ready(function () {
+    $('#speech-form1').on('submit', function (e) {
+      e.preventDefault();
+
+      const motion = $('#motion').val();
+      const debatetype = $('#debatetype').val();
+      const speech = $('#speechInput1').val();
+      const side = $('#side').val();
+
+      document.getElementById("feedbackOutput").value = "Generating feedback - this can take up to a minute...";
+
+      $.ajax({
+        url: 'checkspeech.php',
+        type: 'POST',
+        data: {
+          motion: motion,
+          debatetype: debatetype,
+          speech: speech,
+          side: side
+        },
+        success: function (response) {
+          document.getElementById("feedbackOutput").value = "";
+          i = 0;
+          typeWriter1(response)
+        },
+        error: function () {
+          alert('Something went wrong - please try again later.');
+        }
+      });
+    });
+});
+</script>
+</body>
+</html>
